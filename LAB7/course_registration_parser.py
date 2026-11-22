@@ -1,24 +1,48 @@
 def format_course_code(code):
     """
     Formats 'cs 301' as 'CS301'.
-    Assumes code has exactly two words: department and number.
     """
-    dept, number = code.split()
+    if not isinstance(code, str):
+        return ""
+
+    parts = code.strip().split()
+    if len(parts) != 2:
+        return ""
+
+    dept, number = parts
+    if not dept or not number:
+        return ""
     return dept.upper() + number
 
 def total_credits(text):
     """
     Adds up comma-separated course credits.
-    Assumes every value is a whole number.
     """
-    return sum(int(credit) for credit in text.split(','))
+    if not isinstance(text, str):
+        return 0
+
+    total = 0
+    for credit in text.split(','):
+        credit = credit.strip()
+        if not credit:
+            continue
+        try:
+            value = int(credit)
+        except (TypeError, ValueError):
+            continue
+        if value >= 0:
+            total += value
+    return total
 
 def parse_student_record(line):
     """
     Parses 'SRN|name|status' into a dictionary.
-    Assumes all three fields are present.
     """
+    if not isinstance(line, str):
+        line = ""
+
     parts = line.split('|')
+    parts.extend([""] * (3 - len(parts)))
     return {"srn": parts[0].strip().upper(),
             "name": parts[1].strip(),
             "status": parts[2].strip().lower()}
